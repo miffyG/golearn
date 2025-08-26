@@ -1,0 +1,352 @@
+definitions:
+  handler.CreateCommentRequest:
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
+  handler.CreatePostRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  handler.LoginRequest:
+    properties:
+      password:
+        maxLength: 26
+        minLength: 6
+        type: string
+      username:
+        maxLength: 26
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handler.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 26
+        minLength: 6
+        type: string
+      phone:
+        type: string
+      username:
+        maxLength: 26
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  models.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: 用户信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":{"token":"xxx"},"msg":"登录成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: '{"code":401,"msg":"无效的凭证"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"登录失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 用户登录
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册接口
+      parameters:
+      - description: 用户信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":{"user_id":1},"msg":"注册成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误或密码设置失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"注册失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 用户注册
+      tags:
+      - auth
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: 获取帖子列表接口
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":[{"id":1,"title":"标题","user_id":1}],"msg":"获取帖子成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: '{"code":500,"msg":"获取帖子失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 获取帖子列表
+      tags:
+      - posts
+    post:
+      consumes:
+      - application/json
+      description: 创建帖子接口
+      parameters:
+      - description: 帖子信息
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":{"post_id":1},"msg":"创建帖子成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"创建帖子失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 创建帖子
+      tags:
+      - posts
+  /posts/{post_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除帖子接口
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"msg":"删除帖子成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: '{"code":403,"msg":"没有权限"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: '{"code":404,"msg":"帖子未找到"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"删除帖子失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 删除帖子
+      tags:
+      - posts
+    get:
+      consumes:
+      - application/json
+      description: 获取帖子详情接口
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":{"id":1,"title":"标题","content":"内容","user_id":1},"msg":"获取帖子成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: '{"code":404,"msg":"帖子未找到"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"获取帖子失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 获取帖子详情
+      tags:
+      - posts
+    put:
+      consumes:
+      - application/json
+      description: 更新帖子接口
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      - description: 帖子信息
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":{"id":1,"title":"标题","content":"内容","user_id":1},"msg":"更新帖子成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: '{"code":403,"msg":"没有权限"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: '{"code":404,"msg":"帖子未找到"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"更新帖子失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 更新帖子
+      tags:
+      - posts
+  /posts/{post_id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: 获取帖子评论接口
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":[{"id":1,"content":"内容","user_id":1,"post_id":1}],"msg":""}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: '{"code":500,"msg":"获取评论失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 获取帖子评论
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: 创建评论接口
+      parameters:
+      - description: 帖子ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      - description: 评论信息
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200,"data":{"id":1,"content":"内容","user_id":1,"post_id":1},"msg":"创建评论成功"}'
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: '{"code":400,"msg":"参数错误"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: '{"code":500,"msg":"创建评论失败"}'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 创建评论
+      tags:
+      - comments
+swagger: "2.0"

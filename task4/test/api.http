@@ -1,0 +1,64 @@
+### register
+POST  http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "password": "testpassword1",
+    "email": "testuser1@example.com"
+}
+
+# 登录
+# @name login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "testuser1",
+    "password": "testpassword1"
+}
+
+### 使用返回的token进行后续请求
+@token = {{login.response.body.data.token}}
+
+# 获取所有文章
+GET http://localhost:8080/api/v1/posts
+
+# 获取单个文章
+GET http://localhost:8080/api/v1/posts/8
+
+# 创建文章
+POST http://localhost:8080/api/v1/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "New Post by testuser1",
+    "content": "This is a new post."
+}
+
+# 更新文章
+PUT http://localhost:8080/api/v1/posts/98
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Updated Post by rest client",
+    "content": "This is an updated post.testuser1"
+}
+
+# 删除文章
+DELETE http://localhost:8080/api/v1/posts/98
+Authorization: Bearer {{token}}
+
+# 获取文章评论
+GET http://localhost:8080/api/v1/posts/1/comments
+
+# 创建文章评论
+POST http://localhost:8080/api/v1/posts/1/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "content": "This is a comment."
+}

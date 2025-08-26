@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Gin with Air",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "program": "${workspaceFolder}/task4/tmp/main",
+      "env": {
+        "GO_ENV": "development"
+      },
+      "preLaunchTask": "Run Air"
+    }
+  ]
+}
