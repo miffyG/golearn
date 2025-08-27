@@ -1,0 +1,13 @@
+root = "cmd"
+tmp_dir = "../tmp"
+
+[build]
+cmd = "go build -o tmp/main.exe ./cmd"
+bin = "tmp/main.exe"
+dir = "."
+include_dir = ["cmd"]
+include_ext = ["go"]
+exclude_dir = ["tmp"]
+
+[log]
+time = true
